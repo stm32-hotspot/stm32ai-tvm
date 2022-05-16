@@ -1,0 +1,48 @@
+#
+# @attention
+#
+# Copyright (c) 2022 STMicroelectronics.
+# All rights reserved.
+#
+# This software is licensed under terms that can be found in the LICENSE file
+# in the root directory of this software component.
+# If no LICENSE file comes with this software, it is provided AS-IS.
+#
+
+# Makefile for the STM32 F412 Disco project.
+
+ROOT_DIR ?= .
+BOARDS_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+
+BOARD = nucleo-f412zg
+
+#
+# Default options
+#
+include mk/default.mk
+
+#
+# TOOLS -----------------------------------------------------------
+#
+include mk/gcc.mk
+include mk/macros.mk
+
+#
+# Core/Device options ---------------------------------------------
+#
+CORE :=
+
+STM32 := STM32F4xx
+DEVICE := STM32F412Zx
+DEVICE_CORE := cortex-m4
+
+include mk/$(DEVICE_CORE).mk
+
+CFLAGS-${CORE} += -D${DEVICE}
+
+LDSCRIPTS ?= $(BOARDS_DIR)/$(BOARD)/STM32F412ZGTX_FLASH.ld
+
+LDFLAGS += $(LDFLAGS-$(CORE))
+LDFLAGS += -T$(LDSCRIPTS)
+
+include mk/common.mk
